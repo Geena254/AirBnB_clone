@@ -9,9 +9,32 @@ class BaseModel:
     """This is the base class from which all other classes will inherit."""
 
     def __init__(self):
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+        """This initializes instance attributes
+
+        Args:
+            - *args: A list of arguments (not used in this implementation)
+            - **kwargs: A dict of key-values arguments
+        """
+        if kwargs is not None and kwargs != {}:  # Check if kwargs is not empty
+            for key in kwargs:
+                # Handle special cases for 'created_at' and 'updated_at'
+                if key == "created_at":
+                    # Convert the 'created_at' datetime string to a datetime object
+                    self.__dict__["created_at"] = datetime.strptime(
+                        kwargs["created_at"], "%Y-%m-%dT%H:%M:%S.%f")
+                elif key == "updated_at":
+                    # Convert the 'updated_at' datetime string to a datetime object
+                    self.__dict__["updated_at"] = datetime.strptime(
+                        kwargs["updated_at"], "%Y-%m-%dT%H:%M:%S.%f")
+                else:
+                    # Handle other attributes
+                    self.__dict__[key] = kwargs[key]
+
+         else:
+             # Create a new instance with default values
+             self.id = str(uuid.uuid4())
+             self.created_at = datetime.now()
+             self.updated-at = datetime.now()
 
     def __str__(self):
         """Returns the official string representation"""
