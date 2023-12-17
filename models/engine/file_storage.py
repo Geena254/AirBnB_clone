@@ -36,8 +36,25 @@ class FileStorage:
             return
         with open(FileStorage.__file_path, "r", encoding="utf-8") as file:
             obj_dict = json.load(file)
-            obj_dict = {}
-            for l, w in obj_dict.items():
-                obj_dict[l] = self.classes()[w["__class__"]](**w)
+            obj_dict = {l: self.classes()[w["__class__"]](**w)
+                        for l, w in obj_dict.items()}
             # TODO: should this overwrite or insert?
             FileStorage.__objects = obj_dict
+
+    def classes(self):
+        """This returns a dictionary of valid classes and their references"""
+        from models.base_model import BaseModel
+
+        classes = {"BaseModel": BaseModel}
+
+        return classes
+
+    def attributes(self):
+        """This returns the valid attributes and their types for classname"""
+        attributes = {
+            "BaseModel":
+                     {"id": str,
+                      "created_at": datetime.datetime,
+                      "updated_at": datetime.datetime}
+                     }
+        return attributes
