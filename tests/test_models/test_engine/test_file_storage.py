@@ -63,11 +63,15 @@ class TestFileStorage_methods(unittest.TestCase):
 
     def test_new(self):
         bm = BaseModel()
+        usr = User()
 
         models.storage.new(bm)
+        models.storage.new(usr)
 
         self.assertIn("BaseModel." + bm.id, models.storage.all().keys())
         self.assertIn(bm, models.storage.all().values())
+        self.assertIn("User." + usr.id, models.storage.all().keys())
+        self.assertIn(usr, models.storage.all().values())
 
     def test_new_with_args(self):
         with self.assertRaises(TypeError):
@@ -79,13 +83,17 @@ class TestFileStorage_methods(unittest.TestCase):
 
     def test_save(self):
         bm = BaseModel()
+        usr = User()
 
         models.storage.new(bm)
+        models.storage.new(usr)
+        models.storage.save()
 
         save_text = ""
         with open("file.json", "r") as f:
             save_text = f.read()
             self.assertIn("BaseModel." + bm.id, save_text)
+            self.assertIn("User." + usr.id, save_text)
 
     def test_save_with_arg(self):
         with self.assertRaises(TypeError):
@@ -93,12 +101,15 @@ class TestFileStorage_methods(unittest.TestCase):
 
     def test_reload(self):
         bm = BaseModel()
+        usr = User()
 
         models.storage.new(bm)
+        models.storage.new(usr)
         models.storage.save()
         models.storage.reload()
         objs = FileStorage._FileStorage__objects
         self.assertIn("BaseModel." + bm.id, objs)
+        self.assertIn("User." + usr.id, objs)
 
     def test_reload_with_arg(self):
         with self.assertRaises(TypeError):
